@@ -11,6 +11,7 @@ private:
 public:
 	Vec();
 	Vec(int _size);
+	//d1 d2 - диапозоны
 	Vec(int _size, int d1, int d2);
 	Vec(int _size, std::vector<double> _vector);
 	void setSize(int _size);

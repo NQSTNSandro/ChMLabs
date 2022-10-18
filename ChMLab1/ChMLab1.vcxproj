@@ -147,6 +147,9 @@
     <ClInclude Include="matrix.h" />
     <ClInclude Include="vec.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Скриншот 18-10-2022 185352.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

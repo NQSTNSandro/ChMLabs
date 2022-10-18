@@ -93,29 +93,31 @@ int main()
     cout << "\nq:\n";
     print(q);*/
 
-    Matrix matr(8, -10, 10, -100, 100, -10, 10, -10, 10);
-    Vec x(8, -10, 10), f, x1, res, f1;
+    Matrix matr(14, 0, 9, 0, 9, 0, 9, -0, 9,8);
+    Vec x(14, 0, 9), f, x1, res, f1;
     f = matr * x;
     //cout << "f_nach=" << f<<"\n";
     //cout << "x_tochn=" << x << "\n";
 
-    //cout << matr <<"\n";
-
-    f = matr.step1(f);
+    cout << matr <<"\n";
+    cout <<" a= " << matr.aGet() << "\n" << " b= " << matr.bGet() << "\n" << " c= " << matr.cGet() << "\n" << " p= " << matr.pGet() << "\n" << " q= " << matr.qGet() << "\n";
+    /*f = matr.step1(f);
     f1 = matr * x;
-    //cout << "f_izm="<<f << "\n" << "f1=" << f1 << "\n" << matr << "\n"<<"f-f1="<<(f-f1).modul();
+    cout << "f_izm="<<f << "\n" << "f1=" << f1 << "\n"<<"\n" << matr << "\n" << "f-f1=" << (f - f1).modul()<<endl;
     f = matr.step2(f);
     f1 = matr * x;
-    //cout << "f_izm=" << f << "\n" << "f1=" << f1 << "\n" << matr << "\n" << "f-f1=" << (f - f1).modul();
+    cout << "f_izm=" << f << "\n" << "f1=" << f1 << "\n" << "\n" << matr << "\n" << "f-f1=" << (f - f1).modul()<<endl;
     f = matr.step3(f);
-    f1 = matr * x;
+    f1 = matr * x;*/
     //cout << "f_izm=" << f << "\n" << "f1=" << f1 << "\n" << matr << "\n" << "f-f1=" << (f - f1).modul();
     x1 = matr.step4(f);
     //cout << "x1=" << x1<< "\n";
     //cout << x << "\n";
     res = x - x1;
     //cout << res;
-    cout << "Max error: " << res.modul();
+    //cout << "Sum:  " << x+f;
+
+    //cout << "Max error: " << res.modul();
 
 
 }

@@ -104,6 +104,7 @@ Vec Vec::operator-(std::vector<double> _vector)
 
 double Vec::operator*(Vec& obj)
 {
+	//scp- число 
 	double skp = 0;
 
 	if (size == obj.getSize())
@@ -134,7 +135,7 @@ double Vec::operator*(std::vector<double> _vector)
 			skp += vector[i] * _vector[i];
 		return skp;
 	}
-	else return skp;
+	return skp;
 }
 
 void Vec::operator=(Vec obj)
@@ -148,7 +149,7 @@ void Vec::operator=(std::vector<double> _vector)
 	vector = _vector;
 	size = _vector.size();
 }
-
+//Ќахождение по модулю самого большого числа
 double Vec::modul()
 {
 	double max = abs(vector[0]);
@@ -183,7 +184,7 @@ ostream& operator<<(ostream& out, Vec obj)
 
 	for (int i = 0; i < obj.getSize(); i++)
 	{
-		out << obj.getVector()[i] << " ";
+		out << obj.getVector()[i] << "; ";
 	}
 	return out;
 }

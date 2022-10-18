@@ -2,34 +2,61 @@
 
 void Matrix::agreementpq()
 {
+	//a- под главной, b - главная,c- над главной, p-первый столбец,q- второй столбец
 	vector<double> a1, b1, c1;
-	a1.push_back(p.getVector()[1]);
-	a1.push_back(q.getVector()[2]);
-	b1.push_back(p.getVector()[0]);
-	b1.push_back(q.getVector()[1]);
-	c1.push_back(q.getVector()[0]);
-	for (int i = 2; i < size; i++)
-	{
-		if (i != size - 1)
-			a1.push_back(a.getVector()[i]);
+	for (int i = 0; i < k; i++){
+		a1.push_back(a.getVector()[i]);
 		b1.push_back(b.getVector()[i]);
-		c1.push_back(c.getVector()[i - 1]);
+		c1.push_back(c.getVector()[i]);
+	}
+	a1.push_back(p.getVector()[size-k+2]);
+	b1.push_back(p.getVector()[size-k+1]);
+	c1.push_back(p.getVector()[size-k]);
+	a1.push_back(a.getVector()[k+1]);
+	b1.push_back(b.getVector()[k + 1]);
+	c1.push_back(c.getVector()[k + 1]);
+	a1.push_back(q.getVector()[size - k ]);
+	b1.push_back(q.getVector()[size - k - 1]);
+	c1.push_back(q.getVector()[size - k - 2]);
+	for (int i = k + 3; i < size; i++) {
+		if (i != size - 1)
+		{
+			a1.push_back(a.getVector()[i]);
+			c1.push_back(c.getVector()[i]);
+
+		}
+		b1.push_back(b.getVector()[i]);
 	}
 	a.setVector(a1);
 	b.setVector(b1);
 	c.setVector(c1);
 }
-
+//Согласование через a,b,c
 void Matrix::agreement()
 {
+	cout << "Natural p=" << p << "Natural q=" << q<<endl;
 	vector<double> p1, q1;
-	p1.push_back(b.getVector()[0]);
-	p1.push_back(a.getVector()[0]);
-	p1.push_back(p.getVector()[2]);
-	q1.push_back(c.getVector()[0]);
-	q1.push_back(b.getVector()[1]);
-	q1.push_back(a.getVector()[1]);
-	for (int i = 3; i < size; i++)
+	for (int i = 0; i < size-k-2; i++)
+	{
+		p1.push_back(p.getVector()[i]);
+		if (i < size - k - 3) {
+			q1.push_back(q.getVector()[i]);
+			cout << "Super q= " << q.getVector()[i] << endl;
+
+		}
+		
+
+	}
+	p1.push_back(p.getVector()[size-k-2]);
+	p1.push_back(c.getVector()[size - k + 1]);
+	p1.push_back(b.getVector()[size - k + 1]);
+	p1.push_back(a.getVector()[size - k]);
+	q1.push_back(c.getVector()[size - k + 3]);
+	q1.push_back(b.getVector()[size - k + 3]);
+	q1.push_back(a.getVector()[size - k + 2]);
+	q1.push_back(q.getVector()[size - k]);
+	q1.push_back(q.getVector()[size - k + 1]);
+	for (int i = size - k+2; i < size; i++)
 	{
 		p1.push_back(p.getVector()[i]);
 		q1.push_back(q.getVector()[i]);
@@ -37,7 +64,7 @@ void Matrix::agreement()
 	p.setVector(p1);
 	q.setVector(q1);
 }
-
+// нахуй не надо?
 Matrix::Matrix(int _size)
 {
 	size = _size;
@@ -48,7 +75,7 @@ Matrix::Matrix(int _size)
 	q = Vec(_size);
 }
 
-Matrix::Matrix(int _size, int da1, int da2, int db1, int db2, int dc1, int dc2, int dpq1, int dpq2)
+Matrix::Matrix(int _size, int da1, int da2, int db1, int db2, int dc1, int dc2, int dpq1, int dpq2,int _k)
 {
 	a = Vec(_size - 1, da1, da2);
 	b = Vec(_size, db1, db2);
@@ -56,6 +83,7 @@ Matrix::Matrix(int _size, int da1, int da2, int db1, int db2, int dc1, int dc2, 
 	p = Vec(_size, dpq1, dpq2);
 	q = Vec(_size, dpq1, dpq2);
 	size = _size;
+	k = _k;
 	agreement();
 }
 
@@ -99,6 +127,11 @@ void Matrix::qSet(Vec vec1)
 	q = vec1;
 }
 
+void Matrix::kset(int _k)
+{
+	k = _k;
+}
+
 void Matrix::sizeSet(int _size)
 {
 	size = _size;
@@ -129,11 +162,15 @@ int Matrix::sizeGet()
 {
 	return size;
 }
-
-Vec Matrix::step1(Vec f)
+int Matrix::kGet()
 {
+	return k;
+}
+//f->Ax=f
+Vec Matrix::step1(Vec f)
+{//ex,ex1=q&p
 	vector<double> f1 = f.getVector(), ex, ex1;
-
+	//R-хуета из чм
 	double R = 1 / b.getVector()[0];
 	ex.push_back(c.getVector()[0] * R);
 	f1[0] *= R;
@@ -153,6 +190,7 @@ Vec Matrix::step1(Vec f)
 
 Vec Matrix::step2(Vec f)
 {
+	//как R
 	double del;
 
 	vector<double> f1 = f.getVector(), a1, b1, c1, q1;
@@ -369,50 +407,63 @@ istream& operator>>(istream& in, Matrix& obj)
 
 ostream& operator<<(ostream& out, Matrix obj)
 {
-	for (int i = 0; i < obj.sizeGet(); i++)
+	for (int i = 0; i < obj.kGet()-1; i++)
 	{
-		switch (i)
-		{
-		case(0):
-			out << obj.bGet().getVector()[0] << " " << obj.cGet().getVector()[0] << " ";
-			for (int j = 2; j < obj.sizeGet(); j++)
-			{
-				out << "0 ";
-			}
-			out << "\n";
-			break;
-		case(1):
-			out << obj.aGet().getVector()[0] << " " << obj.bGet().getVector()[1] << " " << obj.cGet().getVector()[1] << " ";
-			for (int j = 3; j < obj.sizeGet(); j++)
-			{
-				out << "0 ";
-			}
-			out << "\n";
-			break;
-		case(2):
-			out << obj.pGet().getVector()[2] << " " << obj.aGet().getVector()[1] << " " << obj.bGet().getVector()[2] << " " << obj.cGet().getVector()[2] << " ";
-			for (int j = 4; j < obj.sizeGet(); j++)
-			{
-				out << "0 ";
-			}
-			out << "\n";
-			break;
-		default:
-			out << obj.pGet().getVector()[i] << " " << obj.qGet().getVector()[i] << " ";
-			for (int j = 2; j < i - 1; j++)
-			{
-				out << "0 ";
-			}
-			if (i != obj.sizeGet() - 1)
-				out << obj.aGet().getVector()[i - 1] << " " << obj.bGet().getVector()[i] << " " << obj.cGet().getVector()[i] << " ";
-			else out << obj.aGet().getVector()[i - 1] << " " << obj.bGet().getVector()[i];
-			for (int j = i + 2; j < obj.sizeGet(); j++)
-			{
-				out << "0 ";
-			}
-			out << "\n";
-			break;
+		for (int j = 0; j < obj.sizeGet() - i - 2; j++)
+			out << 0 << ' ';
+		if (i == 0) {
+			out << obj.cGet().getVector()[0]<<' ';
+			out << obj.bGet().getVector()[0] << ' ';
 		}
+		else {
+			out << obj.cGet().getVector()[i] << ' ';
+			out << obj.bGet().getVector()[i] << ' ';
+			out << obj.aGet().getVector()[i-1] << ' ';
+		}
+		if (i > 1)
+			for (int j = obj.sizeGet() - i + 1; j < obj.sizeGet(); j++)
+				out << 0 << ' ';
+		
+		out << endl;
 	}
+	for (int j = 0; j < obj.sizeGet(); j++)
+		out << obj.pGet().getVector()[j] << ' ';
+	out << endl;
+	for (int j = 0; j < obj.kGet() - 4; j++)
+		out << 0 << ' ';
+	out << obj.cGet().getVector()[obj.kGet() ] << ' ';
+	out << obj.bGet().getVector()[obj.kGet() ] << ' ';
+	out << obj.aGet().getVector()[obj.kGet()-1] << ' ';
+	for (int j = obj.kGet()-1; j < obj.sizeGet(); j++)
+		out << 0 << ' ';
+	out << endl;
+
+	for (int j = 0; j < obj.sizeGet(); j++)
+		out << obj.qGet().getVector()[j] << ' ';
+	out << endl;
+
+	for (int i = obj.kGet() +2; i < obj.sizeGet()-2; i++)
+	{
+		for (int j = 0; j < obj.sizeGet() - i - 2; j++)
+			out << 0 << ' ';
+			out << obj.cGet().getVector()[i] << ' ';
+			out << obj.bGet().getVector()[i] << ' ';
+			out << obj.aGet().getVector()[i - 1] << ' ';
+			for (int j = obj.sizeGet() - i + 1; j < obj.sizeGet(); j++)
+				out << 0 << ' ';
+		out << endl;
+	}
+	out << obj.cGet().getVector()[obj.sizeGet() - 2] << ' ';
+	out << obj.bGet().getVector()[obj.sizeGet() - 2] << ' ';
+	out << obj.aGet().getVector()[obj.sizeGet()-3] << ' ';
+	for (int j = 3; j < obj.sizeGet(); j++)
+		out << 0 << ' ';
+	out << endl;
+	out << obj.bGet().getVector()[obj.sizeGet() - 1] << ' ';
+	out << obj.aGet().getVector()[obj.sizeGet() - 2] << ' ';
+	for (int j = 2; j < obj.sizeGet(); j++)
+		out << 0 << ' ';
+	out << endl;
+	
 	return out;
 }
