@@ -35,6 +35,7 @@ public:
 	Vec step2(Vec f);
 	Vec step3(Vec f);
 	Vec step4(Vec f);
+	void printMatrix();
 	Matrix operator+(Matrix& obj);
 	Matrix operator-(Matrix& obj);
 	Vec operator*(Vec& obj);

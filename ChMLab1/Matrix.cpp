@@ -4,21 +4,23 @@ void Matrix::agreementpq()
 {
 	//a- под главной, b - главная,c- над главной, p-первый столбец,q- второй столбец
 	vector<double> a1, b1, c1;
-	for (int i = 0; i < k; i++){
+	for (int i = 0; i < k-2; i++){
 		a1.push_back(a.getVector()[i]);
 		b1.push_back(b.getVector()[i]);
 		c1.push_back(c.getVector()[i]);
 	}
-	a1.push_back(p.getVector()[size-k+2]);
-	b1.push_back(p.getVector()[size-k+1]);
-	c1.push_back(p.getVector()[size-k]);
-	a1.push_back(a.getVector()[k+1]);
-	b1.push_back(b.getVector()[k + 1]);
-	c1.push_back(c.getVector()[k + 1]);
-	a1.push_back(q.getVector()[size - k ]);
-	b1.push_back(q.getVector()[size - k - 1]);
-	c1.push_back(q.getVector()[size - k - 2]);
-	for (int i = k + 3; i < size; i++) {
+	b1.push_back(b.getVector()[k-2]);
+	c1.push_back(c.getVector()[k - 2]);
+	a1.push_back(p.getVector()[size-k+1]);
+	b1.push_back(p.getVector()[size-k]);
+	c1.push_back(p.getVector()[size-k-1]);
+	a1.push_back(a.getVector()[k-1]);
+	b1.push_back(b.getVector()[k]);
+	c1.push_back(c.getVector()[k]);
+	a1.push_back(q.getVector()[size - k-1 ]);
+	b1.push_back(q.getVector()[size - k - 2]);
+	c1.push_back(q.getVector()[size - k - 3]);
+	for (int i = k + 1; i < size; i++) {
 		if (i != size - 1)
 		{
 			a1.push_back(a.getVector()[i]);
@@ -169,23 +171,45 @@ int Matrix::kGet()
 //f->Ax=f
 Vec Matrix::step1(Vec f)
 {//ex,ex1=q&p
-	vector<double> f1 = f.getVector(), ex, ex1;
+	vector<double> f1 = f.getVector(),p1,a1,b1,c1;
 	//R-хуета из чм
 	double R = 1 / b.getVector()[0];
-	ex.push_back(c.getVector()[0] * R);
+	b1.push_back(b.getVector()[0] * R);
+	c1.push_back(c.getVector()[0] * R);
+	p1 = p.getVector();
+	p1[size - 1] = p.getVector()[size - 1] - p.getVector()[size - 1] * b1[0];
+	p1[size - 2] -= p.getVector()[size - 1] * c1[0];
 	f1[0] *= R;
-	ex1.push_back(p.getVector()[0] * R);
-	for (int i = 1; i < size; i++)
-	{
-		ex.push_back(q.getVector()[i] - p.getVector()[i] * ex[0]);
-		f1[i] -= p.getVector()[i] * f1[0];
-		ex1.push_back(p.getVector()[i] - ex1[0] * p.getVector()[i]);
+	f1[k] -= f1[0] * p.getVector()[size - 1];
+	for (int i = 0; i < k-2; i++) {
+		a1.push_back(a.getVector()[i] - b1[i] * a.getVector()[i]);
+		b1.push_back(b.getVector()[i+1]-c1[i]*a.getVector()[i]);
+		f1[i + 1] -= f1[i]*a.getVector()[i];
+		R = 1 / b1[i + 1];
+		f1[i + 1] *= R;
+		b1[i + 1] *= R;
+		c1.push_back(c.getVector()[i+1] * R);
+		if (i != k - 3) {
+			p1[size - i - 3] -= p1[size - i - 2] * c1[i + 1];
+		}
+		f1[k] -= p1[size - i - 2] * f1[i + 1];
+		p1[size - i - 2] -= p1[size - i - 2] * b1[i + 1];
 	}
-	p = Vec(size, ex1);
-	q = Vec(size, ex);
-	agreementpq();
 
-	return Vec(f.getSize(), f1);
+	for (int i = k-1; i < size-1; i++) {
+		a1.push_back(a.getVector()[i]);
+		b1.push_back(b.getVector()[i]);
+		c1.push_back(c.getVector()[i]);
+	}
+	a1.push_back(a.getVector()[size-2]);
+	b1.push_back(b.getVector()[size - 1]);
+	b.setVector(b1);
+	a.setVector(a1);
+	//c.setVector(c1);
+	p.setVector(p1);
+	agreementpq();
+	//agreement();
+	return Vec(size,f1);
 }
 
 Vec Matrix::step2(Vec f)
@@ -280,6 +304,11 @@ Vec Matrix::step4(Vec f)
 	}
 
 	return Vec(f.getSize(), x1);
+}
+
+void Matrix::printMatrix()
+{
+	cout << " a= " << aGet() << "\n" << " b= " << bGet() << "\n" << " c= " << cGet() << "\n" << " p= " << pGet() << "\n" << " q= " << qGet() << "\n";
 }
 
 Matrix Matrix::operator+(Matrix& obj)

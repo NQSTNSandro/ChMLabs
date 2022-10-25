@@ -37,5 +37,8 @@
     <Image Include="..\..\..\..\Desktop\Скриншот 18-10-2022 185352.jpg">
       <Filter>Исходные файлы</Filter>
     </Image>
+    <Image Include="..\..\..\..\Desktop\Скриншот 25-10-2022 131055.jpg">
+      <Filter>Исходные файлы</Filter>
+    </Image>
   </ItemGroup>
 </Project>
